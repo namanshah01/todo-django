@@ -1,0 +1,14 @@
+{% extends 'task/base.html' %}
+
+{% block content %}
+<h2>Update Page!</h2>
+
+<form method="POST" action="">
+	{% csrf_token %}
+	{{ form.title }}
+	<p>Complete: {{ form.complete }}</p>
+	<input type="submit" value="Update Task">
+</form>
+
+{% endblock content %}
+

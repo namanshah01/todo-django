@@ -1,0 +1,15 @@
+{% extends 'task/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Register Page!</h2>
+
+<div style="width: 60%; margin: auto;">
+<form method="POST" action="">
+	{% csrf_token %}
+	{{ form|crispy }}
+	<input type="submit" value="Sign Up">
+</form>
+</div>
+{% endblock content %}
+
