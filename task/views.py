@@ -49,7 +49,7 @@ class TaskCreateView(LoginRequiredMixin, CreateView):
 	
 	def get_context_data(self, *args, **kwargs):
 		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
-		extra_context['tasks'] = Task.objects.all()
+		extra_context['tasks'] = Task.objects.filter(author=self.request.user)
 		return extra_context
 
 @user_passes_test(check_user, login_url='/login/')

@@ -19,8 +19,8 @@
 	<a href="{% url 'task-status' task.id %}" class="btn btn-sm" role="button"><i class="fas fa-square"></i></a>
 	{{ task.title }}
 	{% endif %}
-	<a href="{% url 'profile' %}"></a>
-	<span>(author - {{ task.author }})</span>
+	<!-- <a href="{% url 'profile' %}"></a>
+	<span>(author - {{ task.author }})</span> -->
 	<a href="{% url 'task-update' task.id %}">Update</a>
 	<a href="{% url 'task-delete' task.id %}">Delete</a>
 </p>
