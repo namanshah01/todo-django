@@ -1,12 +1,12 @@
 {% extends 'task/base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
 <h2>Update Page!</h2>
 
 <form method="POST" action="">
 	{% csrf_token %}
-	{{ form.title }}
-	<p>Complete: {{ form.complete }}</p>
+	{{ form|crispy }}
+	<!-- <p>Complete: {{ form.complete }}</p> -->
 	<input type="submit" value="Update Task">
 </form>
 
