@@ -1,11 +1,96 @@
 from django.shortcuts import render, HttpResponse, redirect, reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
 from .models import Task
 from .forms import TaskForm
 
 # Create your views here.
+
+class TaskCreateView(LoginRequiredMixin, CreateView, ListView):
+	model = Task
+	fields = ['title']
+	template_name = 'task/home.html'
+	context_object_name = 'tasks'
+	extra_context = {}
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		return super().form_valid(form)
+	
+	def get_success_url(self):
+		return reverse('task-home')
+	
+	def get_context_data(self, *args, **kwargs):
+		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
+		extra_context['tasks'] = Task.objects.filter(author=self.request.user)
+		# SEARCH FUNCTIONALITY (TO BE ADDED)
+		# if self.request.GET:
+		# 	print('hey')
+		# 	print(self.form.cleaned_data.get('search'))
+		return extra_context
+
+# FITERING BASED ON COMPLETION
+# class Incomplete(TaskCreateView):
+# 	def get_context_data(self, *args, **kwargs):
+# 		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
+# 		extra_context['tasks'] = Task.objects.filter(author=self.request.user).filter(complete=False)
+# 		return extra_context
+
+# class Incomplete(TaskCreateView):
+# 	def get_context_data(self, *args, **kwargs):
+# 		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
+# 		extra_context['tasks'] = Task.objects.filter(author=self.request.user).filter(complete=True)
+# 		return extra_context
+
+class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+	model = Task
+	fields = ['title', 'complete']
+	template_name = 'task/update.html'
+	context_object_name = 'task'
+	# success_url = reverse('task-home')
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		return super().form_valid(form)
+	
+	def get_success_url(self):
+		return reverse('task-home')
+	
+	def test_func(self):
+		task = self.get_object()
+		if self.request.user == task.author:
+			return True
+		return False
+
+class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+	model = Task
+	fields = ['title', 'complete']
+	template_name = 'task/delete.html'
+	context_object_name = 'task'
+	# success_url = reverse('task-home')
+	# extra_context = {'task': }
+	
+	def get_success_url(self):
+		return reverse('task-home')
+	
+	def test_func(self):
+		task = self.get_object()
+		if self.request.user == task.author:
+			return True
+		return False
+
+def statusTask(request, pk):
+	task = Task.objects.get(id=pk)
+	if task.complete == True:
+		task.complete = False
+	else:
+		task.complete = True
+	task.save()
+	return redirect('/')
+
+
+# UNUSED CODE - BUT SOME HELPFUL STUFF IN HERE
 
 # @login_required
 def listTask(request):
@@ -33,25 +118,6 @@ def check_user(user, task):
 		return True
 	return False
 
-class TaskCreateView(LoginRequiredMixin, CreateView):
-	model = Task
-	fields = ['title']
-	template_name = 'task/home.html'  # <app>/<model>_<viewtype>.html
-	context_object_name = 'tasks'
-	extra_context = {}
-
-	def form_valid(self, form):
-		form.instance.author = self.request.user
-		return super().form_valid(form)
-	
-	def get_success_url(self):
-		return reverse('task-home')
-	
-	def get_context_data(self, *args, **kwargs):
-		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
-		extra_context['tasks'] = Task.objects.filter(author=self.request.user)
-		return extra_context
-
 @user_passes_test(check_user, login_url='/login/')
 def updateTask(request, pk):
 	task = Task.objects.get(id=pk)
@@ -65,26 +131,6 @@ def updateTask(request, pk):
 	context = {'form': form}
 	return render(request, 'task/update.html', context)
 
-class TaskUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-	model = Task
-	fields = ['title', 'complete']
-	template_name = 'task/update.html'  # <app>/<model>_<viewtype>.html
-	context_object_name = 'task'
-	# success_url = reverse('task-home')
-
-	def form_valid(self, form):
-		form.instance.author = self.request.user
-		return super().form_valid(form)
-	
-	def get_success_url(self):
-		return reverse('task-home')
-	
-	def test_func(self):
-		task = self.get_object()
-		if self.request.user == task.author:
-			return True
-		return False
-
 def deleteTask(request, pk):
 	task = Task.objects.get(id=pk)
 	if request.method == 'POST':
@@ -92,30 +138,3 @@ def deleteTask(request, pk):
 		return redirect('/')
 	context = {'task': task}
 	return render(request, 'task/delete.html', context)
-
-class TaskDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-	model = Task
-	fields = ['title', 'complete']
-	template_name = 'task/delete.html'  # <app>/<model>_<viewtype>.html
-	context_object_name = 'task'
-	# success_url = reverse('task-home')
-	# extra_context = {'task': }
-	
-	def get_success_url(self):
-		return reverse('task-home')
-	
-	def test_func(self):
-		task = self.get_object()
-		if self.request.user == task.author:
-			return True
-		return False
-
-def statusTask(request, pk):
-	task = Task.objects.get(id=pk)
-	if task.complete == True:
-		task.complete = False
-	else:
-		task.complete = True
-	task.save()
-	return redirect('/')
-

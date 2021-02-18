@@ -1,29 +1,73 @@
 {% extends 'task/base.html' %}
 
 {% block content %}
-<h2>Home Page!</h2>
+<h2 style="float: left;" class="pb-2">Task List</h2>
 
-<form method="POST" action="/">
+<form style="float: right;" method="POST" action="/">
 	{% csrf_token %}
 	{{ form.title }}
-	<input type="submit" value="Create Task">
+	<input type="submit" class="btn btn-md btn-primary" value="Create Task">
 </form>
 
-{% for task in tasks %}
-<p>
-	<!-- <a href="{% url 'task-update' task.id %}" class="btn btn-dark btn-sm" role="button">COMPLETED</a> -->
-	{% if task.complete == True %}
-	<a href="{% url 'task-status' task.id %}" class="btn btn-sm" role="button"><i class="fas fa-check-square"></i></a>
-	<s>{{ task.title }}</s>
-	{% else %}
-	<a href="{% url 'task-status' task.id %}" class="btn btn-sm" role="button"><i class="fas fa-square"></i></a>
-	{{ task.title }}
-	{% endif %}
-	<!-- <a href="{% url 'profile' %}"></a>
-	<span>(author - {{ task.author }})</span> -->
-	<a href="{% url 'task-update' task.id %}">Update</a>
-	<a href="{% url 'task-delete' task.id %}">Delete</a>
-</p>
-{% endfor %}
+<!-- SEARCH FUNCTIONALITY (TO BE ADDED) -->
+<!-- <form name="searchres" method="GET" action="">  
+	<input type="text" name="search" placeholder="Search" />
+</form>  -->
+
+<div class="table-container">
+<!-- <table class="table table-dark mt-4"> -->
+	<table class="table table-hover mt-4">
+		<tbody>
+			<thead class="thead-dark">
+				<tr>
+					<th scope="col">Status</th>
+					<th scope="col">
+						Task
+						<!-- FITERING BASED ON COMPLETION OF TASK (TO BE FIGURED OUT)-->
+						<!-- <a type="button" class="btn btn-sm btn-outline-light ml-2">All</a>
+						<a type="button" class="btn btn-sm btn-outline-light ml-2">Incomplete</a>
+						<a type="button" class="btn btn-sm btn-outline-light ml-2">Completed</a> -->
+					</th>
+					<th scope="col">Actions</th>
+				</tr>
+			</thead>
+			<!-- <td></td>
+			<td>
+				<form method="POST" action="/">
+					{% csrf_token %}
+					{{ form.title }}
+					<input type="submit" class="btn btn-md btn-primary" value="Create Task">
+				</form>
+			</td>
+			<td></td>
+			<td></td> -->
+			{% for task in tasks reversed %}
+				<tr>
+					{% if task.complete == True %}
+						<th scope="row">
+							<a href="{% url 'task-status' task.id %}" class="btn btn-sm" role="button"><i class="fas fa-check-square"></i></a>
+						</th>
+						<td>
+							<s>{{ task.title }}</s>
+						</td>
+					{% else %}
+						<th scope="row">
+							<a href="{% url 'task-status' task.id %}" class="btn btn-sm" role="button"><i class="fas fa-square"></i></a>
+						</th>
+						<td>
+							{{ task.title }}
+						</td>
+					{% endif %}
+					<td>
+						<a type="button" class="btn btn-sm btn-outline-warning mr-5" href="{% url 'task-update' task.id %}">Update</a>
+						<a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'task-delete' task.id %}">Delete</a>
+					</td>
+					<!-- <td><a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'task-delete' task.id %}">Delete</a></td> -->
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
 {% endblock content %}
 
