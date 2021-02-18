@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect, reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
+from django.core.paginator import Paginator
 from .models import Task
 from .forms import TaskForm
 
@@ -12,7 +13,9 @@ class TaskCreateView(LoginRequiredMixin, CreateView, ListView):
 	fields = ['title']
 	template_name = 'task/home.html'
 	context_object_name = 'tasks'
-	extra_context = {}
+	# extra_context = {}		# CONTENT REQUIRED WHEN ListView WAS NOT INHERITED
+	# ordering = ['-time']		# not working (so ordered in get_queryset)
+	paginate_by = 7
 
 	def form_valid(self, form):
 		form.instance.author = self.request.user
@@ -21,16 +24,20 @@ class TaskCreateView(LoginRequiredMixin, CreateView, ListView):
 	def get_success_url(self):
 		return reverse('task-home')
 	
-	def get_context_data(self, *args, **kwargs):
-		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
-		extra_context['tasks'] = Task.objects.filter(author=self.request.user)
-		# SEARCH FUNCTIONALITY (TO BE ADDED)
-		# if self.request.GET:
-		# 	print('hey')
-		# 	print(self.form.cleaned_data.get('search'))
-		return extra_context
+	def get_queryset(self):
+		return self.model.objects.filter(author=self.request.user).order_by('-id')
+	
+	# CONTENT REQUIRED WHEN ListView WAS NOT INHERITED
+	# def get_context_data(self, *args, **kwargs):
+	# 	extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
+	# 	extra_context['tasks'] = Task.objects.filter(author=self.request.user)
+	# 	# SEARCH FUNCTIONALITY (TO BE ADDED)
+	# 	# if self.request.GET:
+	# 	# 	print('hey')
+	# 	# 	print(self.form.cleaned_data.get('search'))
+	# 	return extra_context
 
-# FITERING BASED ON COMPLETION
+# FITERING BASED ON COMPLETION  OF TASK (TO BE FIGURED OUT)
 # class Incomplete(TaskCreateView):
 # 	def get_context_data(self, *args, **kwargs):
 # 		extra_context = super(TaskCreateView, self).get_context_data(*args, **kwargs)
