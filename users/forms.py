@@ -21,19 +21,8 @@ class UserRegistrationForm(UserCreationForm):
 				self.fields[fieldname].label = ''
 
 class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField()
+	email = forms.EmailField()
 
-    class Meta:
-        model = User
-        fields = ['username', 'email']
-		widgets = {
-			'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
-			'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Id'})
-		}
-	
-	def __init__(self, *args, **kwargs):
-		super(UserRegistrationForm, self).__init__(*args, **kwargs)
-	
-		for fieldname in ['username', 'email']:
-				self.fields[fieldname].help_text = None
-				self.fields[fieldname].label = ''
+	class Meta:
+		model = User
+		fields = ['username', 'email']
