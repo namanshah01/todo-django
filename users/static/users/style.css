@@ -57,4 +57,7 @@
 	.reduce-width{
 		width: 90%;
 	}
+	table{
+		width: 100%;
+	}
 }
