@@ -45,3 +45,16 @@
 }
 
 /* -------------------- home page -------------------- */
+.reduce-width{
+	width: 50%;
+	margin: auto;
+}
+
+@media (max-width: 768px) {
+	.login-block{
+		width: 90%;
+	}
+	.reduce-width{
+		width: 90%;
+	}
+}

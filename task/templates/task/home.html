@@ -28,7 +28,8 @@
 						<a type="button" class="btn btn-sm btn-outline-light ml-2">Incomplete</a>
 						<a type="button" class="btn btn-sm btn-outline-light ml-2">Completed</a> -->
 					</th>
-					<th scope="col">Actions</th>
+					<th class="pl-5" scope="col">Actions</th>
+					<!-- <th></th> -->
 				</tr>
 			</thead>
 			<!-- <td></td>
@@ -59,7 +60,7 @@
 						</td>
 					{% endif %}
 					<td>
-						<a type="button" class="btn btn-sm btn-outline-warning mr-5" href="{% url 'task-update' task.id %}">Update</a>
+						<a type="button" class="btn btn-sm btn-outline-warning mr-1" href="{% url 'task-update' task.id %}">Update</a>
 						<a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'task-delete' task.id %}">Delete</a>
 					</td>
 					<!-- <td><a type="button" class="btn btn-sm btn-outline-danger" href="{% url 'task-delete' task.id %}">Delete</a></td> -->

@@ -2,15 +2,6 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<!-- <h2>Login Page!</h2>
-
-<div style="width: 60%; margin: auto;">
-<form method="POST" action="">
-	{% csrf_token %}
-	{{ form|crispy }}
-	<input type="submit" value="Login">
-</form>
-</div> -->
 
 <div class="login-block">
 	<legend>Sign In to <strong>Todo List</strong></legend>
@@ -32,9 +23,7 @@
 			</div>
 			<div style="clear: both;"></div>
 	  </div>
-		<!-- <div class="check3"> -->
 		<p>Do not have a account? Register <a href="{% url 'register' %}">here</a>!</p>
-		<!-- </div> -->
 	</form>
 </div>
 

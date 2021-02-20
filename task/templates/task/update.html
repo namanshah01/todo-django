@@ -2,15 +2,12 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<div style="width: 50%; margin: auto;">
+<div class="reduce-width">
 <h2>Update Task: "{{ task.title }}"</h2>
 
 <form method="POST" action="">
 	{% csrf_token %}
-	<!-- {{ form.title }}
-	{{ form.complete }} -->
 	{{ form|crispy }}
-	<!-- <p>Complete: {{ form.complete }}</p> -->
 	<input type="submit" class="btn btn-primary" value="Update Task">
 </form>
 </div>
